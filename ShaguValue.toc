@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: |cff33ffccShagu|cffffffffValue
+## Author: Shagu, 2017
+## Notes: Show item sell and buy values
+## Version: 0.1
+
+ShaguValue.lua
