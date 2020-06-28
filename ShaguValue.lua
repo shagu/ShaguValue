@@ -1962,18 +1962,11 @@ end)
 local HookSetItemRef = SetItemRef
 SetItemRef = function(link, text, button)
   local item, _, id = string.find(link, "item:(%d+):.*")
-  ItemRefTooltip.item = item and id or nil
-  ItemRefTooltip.link = link
   HookSetItemRef(link, text, button)
-end
-
-ItemRefTooltip:SetScript("OnUpdate", function()
-  if this.item then
-    this:ClearLines()
-    this:SetHyperlink(this.link)
-    AddVendorPrices(ItemRefTooltip, tonumber(ItemRefTooltip.item), 1)
+  if not IsAltKeyDown() and not IsShiftKeyDown() and not IsControlKeyDown() and item then
+    AddVendorPrices(ItemRefTooltip, tonumber(id), 1)
   end
-end)
+end
 
 local HookSetBagItem = GameTooltip.SetBagItem
 function GameTooltip.SetBagItem(self, container, slot)
