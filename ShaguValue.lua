@@ -1915,6 +1915,35 @@ local function CreateGoldString(money)
   return string
 end
 
+local function AddVendorPrices(frame, id, count)
+  if data[id] then
+    local _, _, sell, buy = strfind(data[id], "(.*),(.*)")
+    sell = tonumber(sell)
+    buy = tonumber(buy)
+
+    if not MerchantFrame:IsShown() then
+      if sell > 0 then SetTooltipMoney(frame, sell * count) end
+    end
+
+    if IsShiftKeyDown() then
+      frame:AddLine(" ")
+
+      if count > 1 then
+        frame:AddDoubleLine("Sell:", CreateGoldString(sell) .. "|cff555555  //  " .. CreateGoldString(sell*count), 1, 1, 1);
+      else
+        frame:AddDoubleLine("Sell:", CreateGoldString(sell * count), 1, 1, 1);
+      end
+
+      if count > 1 then
+        frame:AddDoubleLine("Buy:", CreateGoldString(buy) .. "|cff555555  //  " .. CreateGoldString(buy*count), 1, 1, 1);
+      else
+        frame:AddDoubleLine("Buy:", CreateGoldString(buy), 1, 1, 1);
+      end
+    end
+    frame:Show()
+  end
+end
+
 local ShaguValue = CreateFrame( "Frame" , "ShaguValueGameTooltip", GameTooltip )
 
 ShaguValue:SetScript("OnHide", function()
@@ -1924,37 +1953,25 @@ end)
 
 ShaguValue:SetScript("OnShow", function()
   if GameTooltip.itemLink then
-    local _, _, itemID = string.find(GameTooltip.itemLink, "item:(%d+):%d+:%d+:%d+")
-    local itemID = tonumber(itemID)
+    local _, _, id = string.find(GameTooltip.itemLink, "item:(%d+):%d+:%d+:%d+")
     local count = GameTooltip.itemCount or 1
+    AddVendorPrices(GameTooltip, tonumber(id), count)
+  end
+end)
 
-    if data[itemID] then
-      local _, _, sell, buy = strfind(data[itemID], "(.*),(.*)")
-      sell = tonumber(sell)
-      buy = tonumber(buy)
+local HookSetItemRef = SetItemRef
+SetItemRef = function(link, text, button)
+  local item, _, id = string.find(link, "item:(%d+):.*")
+  ItemRefTooltip.item = item and id or nil
+  ItemRefTooltip.link = link
+  HookSetItemRef(link, text, button)
+end
 
-      if not MerchantFrame:IsShown() then
-        if sell > 0 then SetTooltipMoney(GameTooltip, sell * count) end
-      end
-
-      if IsShiftKeyDown() then
-        GameTooltip:AddLine(" ")
-
-        if count > 1 then
-          GameTooltip:AddDoubleLine("Sell" .. ":", CreateGoldString(sell) .. "|cff555555  //  " .. CreateGoldString(sell*count), 1, 1, 1);
-        else
-          GameTooltip:AddDoubleLine("Sell" .. ":", CreateGoldString(sell * count), 1, 1, 1);
-        end
-
-        if count > 1 then
-          GameTooltip:AddDoubleLine("Buy" .. ":", CreateGoldString(buy) .. "|cff555555  //  " .. CreateGoldString(buy*count), 1, 1, 1);
-        else
-          GameTooltip:AddDoubleLine("Buy" .. ":", CreateGoldString(buy), 1, 1, 1);
-        end
-      end
-
-      GameTooltip:Show()
-    end
+ItemRefTooltip:SetScript("OnUpdate", function()
+  if this.item then
+    this:ClearLines()
+    this:SetHyperlink(this.link)
+    AddVendorPrices(ItemRefTooltip, tonumber(ItemRefTooltip.item), 1)
   end
 end)
 
