@@ -1,5 +1,5 @@
 # ShaguValue
-A Vanilla Addon to display item sell and buy values on tooltips using an integrated database. (Hold shift key for extended values)
+A Vanilla (1.12) and TBC (2.4.3) Addon to display item sell and buy values on tooltips using an integrated database. (Hold shift key for extended values)
 
 ![screenshot](https://raw.githubusercontent.com/shagu/ShaguAddons/master/_img/ShaguValue/bag.png)
 
