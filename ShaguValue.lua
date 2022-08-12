@@ -3875,12 +3875,6 @@ function GameTooltip.SetLootRollItem(self, id)
   return HookSetLootRollItem(self, id)
 end
 
-local HookSetLootRollItem = GameTooltip.SetLootRollItem
-function GameTooltip.SetLootRollItem(self, id)
-  GameTooltip.itemLink = GetLootRollItemLink(id)
-  return HookSetLootRollItem(self, id)
-end
-
 local HookSetMerchantItem = GameTooltip.SetMerchantItem
 function GameTooltip.SetMerchantItem(self, merchantIndex)
   GameTooltip.itemLink = GetMerchantItemLink(merchantIndex)
